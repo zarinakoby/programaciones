@@ -1,0 +1,92 @@
+//String NombredeVariable: Secuencia de caracteres, cadena de caracteres que pueden ser numeros o letras.
+//String Nombredelista [100]: Se crea una lista con 100 lugares en los cuales se pueden ingresar valores para cada espacio o direccion en la lista del 1 al 100
+//int: variable entera
+//Todo lo que se defina arriba, fuera del void setup y fuera del void loop, se definen como variables GLOBALES, para ocupar en toda la programacion en cualquier lugar.
+//while: "mientras"
+//for: "repetir"
+String ListaPatentes[100] = ""; 
+String PatenteIngresada="ffhh22"; //puede ser cualquier patente que ingrese al estacionamieto
+String PatenteEgresada="BBBBBBB"; //puede ser cualquier patente que se este retirando del estacionamiento que haya entrado antes
+int sensor_ingreso=0;
+int sensor_egreso=0;
+int cantidad_de_vehiculos_adentro=0;
+int cantidad_de_dinero=0;
+int cantidad_de_horas=0;
+int precio_por_hora=115;
+int espacios_disponibles=100;
+
+/////FUNCIONES /////////////////////////
+//FUNCION PARA IMPRIMIR LA LISTA
+void ImprimirLista(){                  //se crea una funcion que se llama "imprimir lista" en la cual va a imprimir la lista ya sea en el puerto serie o en donde queramos. 
+for(int i=0;i<100;i++){               //lo que hace esta funcion "for" que significa "repetir" es repetir lo siguiente
+                                      //int i=0; la primera parte define una variable de nombre "i" que va a comenzar en la posicion "0" de la lista.
+                                      //la variable "i" va a ser como el puntero que se va a mover dentro de la lista seleccionando espacios dentro de la lista.
+                                       //i<100; lo que se hace aqui es decirle que el puntero va a estar buscando o contando "patentes" dentro de una lista de 100 espacios.
+                                       //i++ ; lo que hace esta parte es decirle al puntero que vaya recorriendo la lista un espacio por uno, primero el primero, luego el segundo, luego el 3ro y asi hasta el 100.
+  Serial.println(ListaPatentes[i]);    //imprime en el monitor serie o en una pantalla o en donde sea la lista de patentes que el puntero "i" fue recorriendo uno por uno.
+}  
+  
+}
+//FUNCION PARA CARGAR PATENTE EN LA LISTA CUANDO UN AUTO INGRESA AL ESTACIONAMIENTO Y LA CAMARA DETECTA DICHA PATENTE
+void CargarPatente(String PatenteIngresada){                  //se crea una funcion para cargar una patente (que quiere decir que un auto ingresa y la camara detecta la patente)
+                                                              //CargarPatente es el nombre de la funcion //(String PatenteIngresada: es la variable que necesita crear la funcion, en este caso va a ser una tipo "String" (porque la patente es una serie de caracteres, letras y numeros)  y se va a llamar PatenteIngresada ya que va a ser el auto que ingrese y la camara detecte ese patente.
+  int Contador=0;                                           //luego se crea una variable que se va a llamar "Contador" que va a ser nuestro puntero en nuestra lista que va a comenzar siempre en la posicion "0"
+  while (ListaPatentes[Contador]!=NULL or Contador==100){   //en esta parte se exaplica o define como funciona la funcion "CargarPatente"
+                                                           //mientras en la "lista de patentes" el contador (puntero que se mueve en la lista) es != (estos signos juntos significa distinto o no es igual) a "NULL" (que quiere decir que ese "vacio") o el contador llegue a 100 (lugares en la lista)
+    Contador=Contador+1;
+                                                           //el contador cuando detecte que ya hay un valor o patente guardad en un espacio, va a saltear ese espacio al siguiente hasta que encuentre un lugar vacio.       
+  }
+  if (Contador < 101){                                   //si el contador se encuentra en una posicion dentro de los 100 lugares de la lista
+     ListaPatentes[Contador] = PatenteIngresada;           //el contador que se encuentra en esa posicion dentro de la lista va a cargar la patente en esa posicion
+                                                             
+                                                            
+}
+
+  }
+//FUNCION PARA BORRAR PATENTE DE UNA LISTA CUANDO UN AUTO SE RETIRA DEL ESTACIONAMIENTO Y LA CAMARA DETECTA DICHA PATENTE
+void BorrarPatente(String PatenteEgresada){                            //se crea una funcion para borrar una patente de la lista cuando se retira un vehiculo y la camara detecta su patente
+                                                                      //se cre la funcion "BorrarPatente" y se crea la variable tipo "String" llamada PatenteEgresada para la patente que esta en la lista que simula ser el auto que se esta yendo del estacionamiento
+  int Contador=0;                                                     //Se crea una variable llamada "Contador" que va a ser el puntero que se mueve dentro de la lista
+  while (ListaPatentes[Contador]!=PatenteEgresada or Contador==100){   //while: "mientras"  != distinto
+    Contador=Contador+1;
+                                                                      //Mientras el contador sea distinto a la PatenteCargada o el contador llegue a la posicion 100 
+  }
+                     
+  ListaPatentes[Contador] = "";                     //lo que hace es en la lista de patentes en la posicion en la que encontro la patente el contador, es dejar ese espacio vacio ""
+}
+
+
+//PROGRAMA, FUNCIONAMIENTO 
+void setup()
+{
+  
+  if (sensor_ingreso==1){                 //si el sensor de igreso detecta un auto (o la camara detecta una patente)
+    CargarPatente(PatenteIngresada);     // se va a ejecutar la funcion "CargarPatente" con la variable "PatenteIngresada" que es la patente que vamos a ingresar o el auto que ingresa al estacionamiento
+  }else if (sensor_egreso==1){            //sino si el sensor de egreso detecta un auto (o la camara detecta una patente irse)
+    BorrarPatente(PatenteEgresada);      //se va a ejecutar la funcion "BorrarPatente" con la variable "PatenteEgresada" que es la patente que vamos a ingresar en esa variable o el auto que egresa del estacionamiento 
+  }
+  ImprimirLista();                       //ejecuta la funcion "Imprimirlista", que lo que hace es imprimir la lista de patentes
+}
+
+ //CONTEO DE AUTOS ESTACIONADOS, ESPACIOS DISPONIBLES, CANTIDAD DE VEHICULOS ADENTRO, IMPRIMIR NO HAY LUGARES, IMPRIMIR CANTIDAD DE DINERO, CANTIDAD DE VEHICULOS Y ESPACIOS DISPONIBLES
+void loop()  
+{
+  if (sensor_ingreso == 1) {
+    cantidad_de_vehiculos_adentro = cantidad_de_vehiculos_adentro + 1;
+    espacios_disponibles = espacios_disponibles - 1;
+   }
+  if (sensor_egreso==1) {
+    cantidad_de_vehiculos_adentro = cantidad_de_vehiculos_adentro - 1;
+    espacios_disponibles = espacios_disponibles + 1;
+    }
+  if (cantidad_de_vehiculos_adentro==100) {
+    Serial.print("NO HAY LUGARES DISPONIBLES");
+  if ((sensor_ingreso==1) && (cantidad_de_horas==5)) {
+    cantidad_de_dinero = cantidad_de_dinero + precio_por_hora * cantidad_de_horas;
+   Serial.print(cantidad_de_dinero);
+   Serial.print(cantidad_de_vehiculos_adentro);
+   Serial.print(espacios_disponibles);
+   }
+   } 
+   }
+    
